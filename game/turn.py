@@ -3,7 +3,7 @@ class Turn:
         self.time = time
 
     def reduce_turn(self):
-        self.time -= 0.01
+        self.time -= 0.02
 
     def get_time(self):
         return self.time

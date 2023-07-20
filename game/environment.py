@@ -15,10 +15,10 @@ class Environment:
         self.grid_size_x = grid_size_x
         self.grid_size_y = grid_size_y
         self.grid = np.zeros((self.grid_size_x, self.grid_size_y))
-        self.last_mouvement = 0
+        self.tmp = []
 
         """Init la durée d'un tour"""
-        self.turn = t.Turn(0.4)
+        self.turn = t.Turn(0.5)
 
         """Init le serpent"""
         self.snake = snake.Snake(4, 4)
@@ -51,50 +51,45 @@ class Environment:
         """Retourne vrai si la case de la grille demandée est vide"""
         if self.grid[x, y] == self.NOTHING:
             return True
-        else :
+        else:
             return False
 
     def next_move(self, mouvement):
         """Permet de générer la grille pour le prochain tour"""
         """Check l'ancien mouvement pour éviter l'effet de revenir en arrière"""
-        if self.last_mouvement == 0: #gauche
-            if mouvement == 0:  # gauche
+        if mouvement == 0:  # gauche
+            if self.snake.get_size() > 1:
+                if [self.snake.get_head()[0] - 1, self.snake.get_head()[1]] == self.snake.get_body()[1]:
+                    self.snake.move_snake(1, 0)
+                else:
+                    self.snake.move_snake(-1, 0)
+            else:
                 self.snake.move_snake(-1, 0)
-            elif mouvement == 1:  # haut
+        elif mouvement == 1:  # haut
+            if self.snake.get_size() > 1:
+                if [self.snake.get_head()[0], self.snake.get_head()[1] - 1] == self.snake.get_body()[1]:
+                    self.snake.move_snake(0, 1)
+                else:
+                    self.snake.move_snake(0, -1)
+            else:
                 self.snake.move_snake(0, -1)
-            elif mouvement == 2:  # droite
-                self.snake.move_snake(-1, 0)
-            elif mouvement == 3:  # bas
-                self.snake.move_snake(0, 1)
-        elif self.last_mouvement == 1: #haut
-            if mouvement == 0:  # gauche
-                self.snake.move_snake(-1, 0)
-            elif mouvement == 1:  # haut
-                self.snake.move_snake(0, -1)
-            elif mouvement == 2:  # droite
+        elif mouvement == 2:  # droite
+            if self.snake.get_size() > 1:
+                if [self.snake.get_head()[0] + 1, self.snake.get_head()[1]] == self.snake.get_body()[1]:
+                    self.snake.move_snake(-1, 0)
+                else:
+                    self.snake.move_snake(1, 0)
+            else:
                 self.snake.move_snake(1, 0)
-            elif mouvement == 3:  # bas
-                self.snake.move_snake(0, -1)
-        elif self.last_mouvement == 2: #droite
-            if mouvement == 0:  # gauche
-                self.snake.move_snake(1, 0)
-            elif mouvement == 1:  # haut
-                self.snake.move_snake(0, -1)
-            elif mouvement == 2:  # droite
-                self.snake.move_snake(1, 0)
-            elif mouvement == 3:  # bas
-                self.snake.move_snake(0, 1)
-        elif self.last_mouvement == 3: #bas
-            if mouvement == 0:  # gauche
-                self.snake.move_snake(-1, 0)
-            elif mouvement == 1:  # haut
-                self.snake.move_snake(0, 1)
-            elif mouvement == 2:  # droite
-                self.snake.move_snake(1, 0)
-            elif mouvement == 3:  # bas
+        elif mouvement == 3:  # bas
+            if self.snake.get_size() > 1:
+                if [self.snake.get_head()[0], self.snake.get_head()[1] + 1] == self.snake.get_body()[1]:
+                    self.snake.move_snake(0, -1)
+                else:
+                    self.snake.move_snake(0, 1)
+            else:
                 self.snake.move_snake(0, 1)
 
-        self.last_mouvement = mouvement
 
         """Vérification si le snake est au bon endroit"""
         self.check_loose(self.snake.get_head())
@@ -124,13 +119,16 @@ class Environment:
         self.set_grid(self.apple.get_apple()[0], self.apple.get_apple()[1], self.APPLE)
 
 
-
     def check_loose(self, position):
         """Vérifie qu'on est toujours dans l'environnement"""
         if position[0] < 0 or position[1] < 0:
             exit(0)
         elif position[0] > 9 or position[1] > 9:
             exit(0)
+
+
+
+
 
 
 
